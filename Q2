@@ -1,0 +1,71 @@
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+
+        // Step 1: Get array size and elements
+        System.out.print("Enter number of elements: ");
+        int n = input.nextInt();
+
+        int[] arr = new int[n];
+        System.out.println("Enter " + n + " integers in ascending order:");
+        for (int i = 0; i < n; i++) {
+            arr[i] = input.nextInt();
+        }
+
+        // Step 2: Get the number to search
+        System.out.print("Enter number to search: ");
+        int key = input.nextInt();
+
+        // Step 3: Perform binary search
+        int result = binarySearch(arr, key);
+
+        // Step 4: Display the result
+        if (result == -1) {
+            System.out.println("Number not found in the array.");
+        } else {
+            System.out.println("Number found at index: " + result);
+        }
+
+        input.close();
+    }
+
+    // -------------------- Binary Search Function --------------------
+    /**
+     * Binary Search works by repeatedly dividing the search range in half.
+     *
+     * Unlike Linear Search (which checks each element one by one),
+     * Binary Search eliminates half of the elements in each step,
+     * making it much faster for large sorted arrays.
+     *
+     * Time Complexity:
+     *   - Linear Search: O(n)
+     *   - Binary Search: O(log n)
+     *
+     * The array must be sorted in ascending (or descending) order
+     * for Binary Search to work correctly.
+     */
+    public static int binarySearch(int[] arr, int key) {
+        int left = 0;
+        int right = arr.length - 1;
+
+        while (left <= right) {
+            int mid = (left + right) / 2;  // Find middle index
+
+            if (arr[mid] == key) {
+                return mid; // Found the element, return its index
+            } else if (arr[mid] < key) {
+                // If key is larger, ignore the left half
+                left = mid + 1;
+            } else {
+                // If key is smaller, ignore the right half
+                right = mid - 1;
+            }
+        }
+
+        // If we reach here, the element was not found
+        return -1;
+    }
+}
