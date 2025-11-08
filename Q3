@@ -1,0 +1,107 @@
+import java.util.*;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+
+        // Step 1: Get main text and pattern from user
+        System.out.print("Enter the main text: ");
+        String text = input.nextLine();
+
+        System.out.print("Enter the pattern to search for: ");
+        String pattern = input.nextLine();
+
+        // Step 2: Perform KMP search
+        kmpSearch(text, pattern);
+
+        input.close();
+    }
+
+    // -------------------- KMP Search --------------------
+    /**
+     * KMP algorithm efficiently finds all occurrences of a pattern in a given text.
+     * It avoids redundant comparisons by using a precomputed prefix table
+     * (also known as the LPS — Longest Prefix Suffix array).
+     */
+    public static void kmpSearch(String text, String pattern) {
+        int n = text.length();
+        int m = pattern.length();
+
+        // Step 1: Build prefix (LPS) array
+        int[] lps = buildLPS(pattern);
+
+        // Step 2: Search using LPS table
+        int i = 0; // index for text
+        int j = 0; // index for pattern
+        boolean found = false;
+
+        while (i < n) {
+            if (text.charAt(i) == pattern.charAt(j)) {
+                i++;
+                j++;
+
+                // Full match found
+                if (j == m) {
+                    System.out.println("Pattern found at index: " + (i - j));
+                    found = true;
+                    // Move j to the last known valid prefix position
+                    j = lps[j - 1];
+                }
+            } else {
+                // Mismatch after j characters matched
+                if (j != 0) {
+                    // Move j to previous best prefix position
+                    j = lps[j - 1];
+                } else {
+                    // If no prefix, move to next character in text
+                    i++;
+                }
+            }
+        }
+
+        if (!found) {
+            System.out.println("Pattern not found in the text.");
+        }
+    }
+
+    // -------------------- Build LPS (Prefix) Array --------------------
+    /**
+     * The LPS (Longest Prefix Suffix) array stores, for each position in the pattern,
+     * the length of the longest proper prefix which is also a suffix.
+     *
+     * Example:
+     * Pattern: "ABABAC"
+     * LPS:     [0, 0, 1, 2, 3, 0]
+     *
+     * How it helps:
+     * When a mismatch occurs, instead of rechecking characters that we *already know* match,
+     * KMP uses the LPS table to skip directly to the next possible match position.
+     * This avoids redundant comparisons and makes the search O(n) instead of O(n*m).
+     */
+    public static int[] buildLPS(String pattern) {
+        int m = pattern.length();
+        int[] lps = new int[m];
+
+        int len = 0; // length of the previous longest prefix suffix
+        int i = 1;   // start from second character
+
+        while (i < m) {
+            if (pattern.charAt(i) == pattern.charAt(len)) {
+                len++;
+                lps[i] = len;
+                i++;
+            } else {
+                if (len != 0) {
+                    // Fall back to previous LPS value
+                    len = lps[len - 1];
+                } else {
+                    // No prefix found
+                    lps[i] = 0;
+                    i++;
+                }
+            }
+        }
+        return lps;
+    }
+}
