@@ -1,0 +1,97 @@
+import java.util.Scanner;
+
+// Node class for the linked list
+class Node {
+    int data;
+    Node next;
+
+    Node(int data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+// Stack implemented using Linked List
+class Stack {
+    private Node top; // Points to the top of the stack
+
+    public Stack() {
+        top = null; // Initially stack is empty
+    }
+
+    // Push operation
+    public void push(int value) {
+        Node newNode = new Node(value); // Create a new node
+        newNode.next = top; // Point new node to current top
+        top = newNode; // Update top to new node
+    }
+
+    // Pop operation
+    public int pop() {
+        if (isEmpty()) {
+            System.out.println("Stack Underflow! Cannot pop.");
+            return -1; // Or throw exception
+        }
+        int value = top.data; // Get top value
+        top = top.next; // Remove top node
+        return value;
+    }
+
+    // Peek operation
+    public int peek() {
+        if (isEmpty()) {
+            System.out.println("Stack is empty!");
+            return -1; // Or throw exception
+        }
+        return top.data;
+    }
+
+    // Check if stack is empty
+    public boolean isEmpty() {
+        return top == null;
+    }
+}
+
+// Main class to test the stack
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        Stack stack = new Stack();
+
+        while (true) {
+            System.out.println("\nStack Operations:");
+            System.out.println("1. Push");
+            System.out.println("2. Pop");
+            System.out.println("3. Peek");
+            System.out.println("4. Check if Empty");
+            System.out.println("5. Exit");
+            System.out.print("Choose an option: ");
+            int choice = sc.nextInt();
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter value to push: ");
+                    int value = sc.nextInt();
+                    stack.push(value);
+                    System.out.println(value + " pushed to stack.");
+                    break;
+                case 2:
+                    int popped = stack.pop();
+                    if (popped != -1) System.out.println("Popped: " + popped);
+                    break;
+                case 3:
+                    int topValue = stack.peek();
+                    if (topValue != -1) System.out.println("Top element: " + topValue);
+                    break;
+                case 4:
+                    System.out.println(stack.isEmpty() ? "Stack is empty." : "Stack is not empty.");
+                    break;
+                case 5:
+                    System.out.println("Exiting...");
+                    return;
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        }
+    }
+}
