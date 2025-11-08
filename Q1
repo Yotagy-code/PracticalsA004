@@ -1,0 +1,101 @@
+import java.util.Scanner;
+
+public class Main {
+
+    // -------------------- Main Method --------------------
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+
+        // Step 1: Get user input
+        System.out.print("Enter number of elements: ");
+        int n = input.nextInt();
+
+        int[] arr = new int[n];
+        System.out.println("Enter " + n + " integers:");
+        for (int i = 0; i < n; i++) {
+            arr[i] = input.nextInt();
+        }
+
+        // Step 2: Perform merge sort
+        mergeSort(arr, 0, n - 1);
+
+        // Step 3: Display sorted array
+        System.out.println("Sorted array in ascending order:");
+        for (int num : arr) {
+            System.out.print(num + " ");
+        }
+    }
+
+    // -------------------- Merge Sort Function --------------------
+    /**
+     * The mergeSort() function uses recursion to divide the array into smaller parts.
+     * Recursion is used because the problem can naturally be broken down into
+     * smaller subproblems of the same type (sorting subarrays).
+     *
+     * Example:
+     * [8, 3, 5, 4, 7, 6, 1, 2]
+     * → Divide into [8, 3, 5, 4] and [7, 6, 1, 2]
+     * → Keep dividing until we reach single-element arrays
+     * → Merge them back together in sorted order
+     */
+    public static void mergeSort(int[] arr, int left, int right) {
+        if (left < right) {
+            // Find middle index
+            int mid = (left + right) / 2;
+
+            // Divide the array into two halves
+            mergeSort(arr, left, mid);      // Sort left half
+            mergeSort(arr, mid + 1, right); // Sort right half
+
+            // Merge the sorted halves
+            merge(arr, left, mid, right);
+        }
+    }
+
+    // -------------------- Merge Function --------------------
+    /**
+     * The merge() function combines two sorted halves into a single sorted array.
+     *
+     * It uses temporary arrays to hold elements from the left and right halves,
+     * then merges them in ascending order by comparing elements one by one.
+     */
+    public static void merge(int[] arr, int left, int mid, int right) {
+        int n1 = mid - left + 1;  // Size of left half
+        int n2 = right - mid;     // Size of right half
+
+        // Create temporary arrays
+        int[] L = new int[n1];
+        int[] R = new int[n2];
+
+        // Copy data into temporary arrays
+        for (int i = 0; i < n1; i++) L[i] = arr[left + i];
+        for (int j = 0; j < n2; j++) R[j] = arr[mid + 1 + j];
+
+        // Merge the two halves
+        int i = 0, j = 0, k = left;
+        while (i < n1 && j < n2) {
+            if (L[i] <= R[j]) {
+                arr[k] = L[i];
+                i++;
+            } else {
+                arr[k] = R[j];
+                j++;
+            }
+            k++;
+        }
+
+        // Copy remaining elements of L[]
+        while (i < n1) {
+            arr[k] = L[i];
+            i++;
+            k++;
+        }
+
+        // Copy remaining elements of R[]
+        while (j < n2) {
+            arr[k] = R[j];
+            j++;
+            k++;
+        }
+    }
+}
