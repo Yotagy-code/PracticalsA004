@@ -1,0 +1,89 @@
+import java.util.Scanner;
+import java.util.Arrays;
+
+public class Main {
+
+    private static final int INF = 99999; // Represents "infinity"
+
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+
+        System.out.print("Enter the number of vertices: ");
+        int n = input.nextInt();
+
+        int[][] graph = new int[n][n];
+
+        System.out.println("Enter the adjacency matrix (use 0 for no edge):");
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int val = input.nextInt();
+                graph[i][j] = (val == 0) ? INF : val; // Convert 0 (no edge) to INF
+            }
+        }
+
+        System.out.print("Enter the starting vertex (0 to " + (n-1) + "): ");
+        int start = input.nextInt();
+        input.close();
+
+        dijkstra(graph, start, n);
+    }
+
+    // -------------------- Dijkstra's Algorithm --------------------
+    /**
+     * Dijkstra's algorithm finds the shortest path from a starting vertex
+     * to all other vertices in a weighted graph (no negative edges).
+     *
+     * It maintains:
+     *   1. dist[] : Array of minimum distances from start
+     *   2. visited[] : Boolean array to track visited vertices
+     *
+     * At each step, it selects the vertex with the **minimum distance** not yet visited
+     * and relaxes all its neighbors.
+     *
+     * The dist[] array acts like a "priority queue" by always holding the current
+     * best known distances, ensuring we always pick the shortest path next.
+     *
+     * Time complexity (using adjacency matrix): O(V^2)
+     */
+    public static void dijkstra(int[][] graph, int start, int n) {
+        int[] dist = new int[n];      // Shortest distances from start
+        boolean[] visited = new boolean[n]; // Track visited vertices
+
+        // Step 1: Initialize distances
+        Arrays.fill(dist, INF);
+        dist[start] = 0;
+
+        // Step 2: Find shortest path for all vertices
+        for (int count = 0; count < n - 1; count++) {
+            // Pick the unvisited vertex with the smallest distance
+            int u = minDistance(dist, visited, n);
+            visited[u] = true;
+
+            // Relaxation: update distances of adjacent vertices
+            for (int v = 0; v < n; v++) {
+                if (!visited[v] && graph[u][v] != INF
+                        && dist[u] + graph[u][v] < dist[v]) {
+                    dist[v] = dist[u] + graph[u][v];
+                }
+            }
+        }
+
+        // Step 3: Print shortest distances
+        System.out.println("\nVertex\tDistance from Source " + start);
+        for (int i = 0; i < n; i++) {
+            System.out.println(i + "\t\t" + (dist[i] == INF ? "INF" : dist[i]));
+        }
+    }
+
+    // -------------------- Find vertex with minimum distance --------------------
+    private static int minDistance(int[] dist, boolean[] visited, int n) {
+        int min = INF, minIndex = -1;
+        for (int v = 0; v < n; v++) {
+            if (!visited[v] && dist[v] <= min) {
+                min = dist[v];
+                minIndex = v;
+            }
+        }
+        return minIndex;
+    }
+}
